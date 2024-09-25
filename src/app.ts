@@ -1,5 +1,6 @@
 import express from "express"
 import { connectTomongo } from "./config/dbConfig"
+import userRouter from "./routes/userRoutes"
 const app = express()
 const PORT = process.env.PORT || 8000
 
@@ -9,6 +10,8 @@ connectTomongo()
 
 app.use(express.json())
 
+// User routes
+app.use('/api/user', userRouter);
 
 
 
