@@ -1,12 +1,20 @@
 import User from '../models/userModel';
+import { validateUserData, validateLoginData } from '../utils/validations'
 import { Response, Request } from 'express';
 import bycrptjs from 'bcryptjs'
+import { error } from 'console';
 
 
 
 // Register a new User function
 
 export const registerUser = async function(req: Request, res: Response) {
+
+    const valid = validateUserData(req.body)
+
+    if (valid.error) {
+        return res.status(400).json({message: valid.error})
+    }
 
     const { name, email, password, role, address, contact, createdAt } = req.body;
 
@@ -19,7 +27,7 @@ export const registerUser = async function(req: Request, res: Response) {
     }
 
     if (existingUser) {
-        return res.status(400).json({message: "User already exist! Login instead"})
+        return res.status(400).json({message: `${email} already exist! Login instead`})
     }
 
     const hashedpassword = bycrptjs.hashSync(password)
@@ -64,6 +72,13 @@ export const getAllUser = async function(req: Request, res: Response) {
 
 // login user function
 export const loginUser = async function(req: Request, res: Response) {
+
+    const valid = validateLoginData(req.body)
+
+    if (valid.error) {
+        return res.status(400).json({message: `Invalid Login credentials ${valid.error}`})
+    }
+
     const {email, password} = req.body
 
     let existingUser;
