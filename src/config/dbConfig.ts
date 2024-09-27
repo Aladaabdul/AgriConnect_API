@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const MONGO_DB_CONNECT_URL: string = process.env.MONGO_DB_URL || 'mongodb://localhost:27017/Agro_connect'
+dotenv.config();
+
+const MONGO_DB_CONNECT_URL = process.env.MONGO_DB_URL as string
 
 export function connectTomongo() {
     mongoose.connect(MONGO_DB_CONNECT_URL)

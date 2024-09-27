@@ -2,12 +2,18 @@ import User from '../models/userModel';
 import { validateUserData, validateLoginData } from '../utils/validations'
 import { Response, Request } from 'express';
 import bycrptjs from 'bcryptjs'
-import { error } from 'console';
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+import { string } from 'joi';
 
+dotenv.config();
+
+const secretKey = process.env.TOKEN_KEY as string
+
+//|| "d61eb919d47f29cd67e9550d7562e9c228042de37e3267de1dc8315e01d25960"
 
 
 // Register a new User function
-
 export const registerUser = async function(req: Request, res: Response) {
 
     const valid = validateUserData(req.body)
@@ -48,9 +54,12 @@ export const registerUser = async function(req: Request, res: Response) {
         return console.log(err)
     }
     
-    return res.status(201).json({user})
+    const token = jwt.sign({ userId: existingUser!.id, email: existingUser!.email }, secretKey , { expiresIn: '1h' });
+
+    return res.status(201).json({user, token})
 
 }
+
 
 // get all user function
 export const getAllUser = async function(req: Request, res: Response) {
@@ -69,6 +78,7 @@ export const getAllUser = async function(req: Request, res: Response) {
 
     return res.status(200).json({users});
 }
+
 
 // login user function
 export const loginUser = async function(req: Request, res: Response) {
@@ -99,5 +109,52 @@ export const loginUser = async function(req: Request, res: Response) {
         return res.status(400).json({message: "Incorrect password or email"})
     }
 
-    return res.status(200).json({message: "Login successfully"})
+    const token = jwt.sign({ userId: existingUser!.id, email: existingUser!.email }, secretKey , { expiresIn: '1h' });
+
+    return res.status(200).json({message: "Login successfully", token})
+}
+
+
+// delete user function
+export const deleteUser = async function(req: Request, res: Response) {
+    const userId = req.params.id;
+
+    let user;
+    try {
+        user = await User.findByIdAndDelete(userId);
+    } catch (error) {
+        return console.log(error)
+    }
+
+    if (!user) {
+        return res.status(500).json({message: "Unable to delete user"})
+    }
+
+    return res.status(200).json({message: `${user.email} deleted successfully`})
+}
+
+
+//update user function
+export const updateUser = async function(req: Request, res: Response) {
+    const userId = req.params.id;
+    const { name, role, address,contact } = req.body
+
+    let user;
+
+    try {
+       user = await User.findByIdAndUpdate(userId, {
+        name,
+        role,
+        address,
+        contact
+       }) 
+    } catch (err) {
+        return console.log(err)
+    }
+
+    if (!user) {
+        return res.status(500).json({message: "Unable to update user"})
+    }
+
+    return res.status(200).json({user})
 }
