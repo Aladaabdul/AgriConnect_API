@@ -10,8 +10,6 @@ dotenv.config();
 
 const secretKey = process.env.TOKEN_KEY as string
 
-//|| "d61eb919d47f29cd67e9550d7562e9c228042de37e3267de1dc8315e01d25960"
-
 
 // Register a new User function
 export const registerUser = async function(req: Request, res: Response) {
@@ -54,7 +52,7 @@ export const registerUser = async function(req: Request, res: Response) {
         return console.log(err)
     }
     
-    const token = jwt.sign({ userId: existingUser!.id, email: existingUser!.email }, secretKey , { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user!.id, email: user!.email }, secretKey , { expiresIn: '1h' });
 
     return res.status(201).json({user, token})
 
@@ -137,7 +135,7 @@ export const deleteUser = async function(req: Request, res: Response) {
 //update user function
 export const updateUser = async function(req: Request, res: Response) {
     const userId = req.params.id;
-    const { name, role, address,contact } = req.body
+    const { name, role, address, contact } = req.body
 
     let user;
 

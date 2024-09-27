@@ -1,9 +1,10 @@
+import { Document } from "mongoose"
 export enum userRole {
-    Customer = "customer",
-    Farmer = "farmer"
+    Customer = "Customer",
+    Farmer = "Farmer"
 }
 
-export interface IUser {
+export interface IUser extends Document {
     name: string,
     email: string,
     password: string,
