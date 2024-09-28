@@ -18,8 +18,6 @@ export const createFarm = async function(req: RequestWithUser, res: Response) {
 
     const user = await User.findById(userId)
 
-    console.log(user?.role)
-
     if (!user || user.role !== 'Farmer') {
         return res.status(400).json({message: "Only users with Farmer role can create farms."})
     }
@@ -57,4 +55,68 @@ export const getAllFarm = async function (req: Request, res: Response) {
     }
 
     return res.status(200).json({farms})
+}
+
+// Update Farm
+export const updateFarm = async function (req: RequestWithUser, res: Response) {
+
+    const farmId = req.params.id;
+
+    const { name, description, location } = req.body;
+
+    const userId = req.user!._id;
+
+    const farm = await Farm.findById(farmId)
+
+
+    if (!farm) {
+        res.status(404).json({message: "No Farm Found"})
+    }
+
+    if (farm?.farmerId.toString() !== userId!.toString()) {
+        return res.status(403).json({message: "You are not authorized to update this farm"})
+    }
+    let updatedfarm
+    try {
+        
+        updatedfarm = await Farm.findByIdAndUpdate(farmId, {
+            name,
+            description,
+            location
+        })
+        
+    } catch (error) {
+      return console.log(error)  
+    }
+
+    return res.status(200).json({message: "Farm Updated Successfully"})
+    
+}
+
+// Delete Farm
+export const deleteFarm = async function (req: RequestWithUser, res: Response) {
+
+    const farmId = req.params.id;
+
+    const userId = req.user!._id;
+
+    const farm = await Farm.findById(farmId)
+
+
+    if (!farm) {
+        res.status(404).json({message: "No Farm Found"})
+    }
+
+    if (farm?.farmerId.toString() !== userId!.toString()) {
+        return res.status(403).json({message: "You are not authorized to delete this farm"})
+    }
+
+    try {
+        await Farm.findByIdAndDelete(farmId)
+    } catch(err) {
+        return console.log(err)
+    }
+
+    return res.status(200).json({message: "Farm deleted Successfully"})
+
 }
