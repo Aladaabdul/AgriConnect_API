@@ -120,3 +120,27 @@ export const deleteFarm = async function (req: RequestWithUser, res: Response) {
     return res.status(200).json({message: "Farm deleted Successfully"})
 
 }
+
+// get All farmer Farm
+
+export const getFarmsByUser = async function (req: RequestWithUser, res: Response) {
+     
+    const userId = req.user?._id
+
+    if (!userId) {
+        return res.status(401).json({message: "User not Authenticated"})
+    }
+
+    let farms
+    try {
+        farms = await Farm.find({farmerId: userId})
+    } catch (error) {
+        return console.log(error)
+    }
+
+    if (!farms || farms.length === 0) {
+        return res.status(404).json({message: "No farm found this user"})
+    }
+
+    return res.status(200).json({farms});
+}
