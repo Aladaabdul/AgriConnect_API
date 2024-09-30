@@ -18,7 +18,7 @@ export const createFarm = async function(req: RequestWithUser, res: Response) {
 
     const user = await User.findById(userId)
 
-    if (!user || user.role !== 'Farmer') {
+    if (!user || user.role !== 'farmer') {
         return res.status(400).json({message: "Only users with Farmer role can create farms."})
     }
 

@@ -4,12 +4,15 @@ import { Response, Request } from 'express';
 import bycrptjs from 'bcryptjs'
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
-import { string } from 'joi';
+import { IUser } from '../interfaces/userInterface';
 
 dotenv.config();
 
 const secretKey = process.env.TOKEN_KEY as string
 
+interface RequestWithUser extends Request {
+    user?: IUser
+}
 
 // Register a new User function
 export const registerUser = async function(req: Request, res: Response) {
@@ -114,10 +117,17 @@ export const loginUser = async function(req: Request, res: Response) {
 
 
 // delete user function
-export const deleteUser = async function(req: Request, res: Response) {
+export const deleteUser = async function(req: RequestWithUser, res: Response) {
     const userId = req.params.id;
 
+    const authId = req.user?._id
+
+    if (userId.toString() !== authId!.toString()) {
+        return res.status(403).json({message: "You are not Authorized to make this request"})
+    }
+
     let user;
+
     try {
         user = await User.findByIdAndDelete(userId);
     } catch (error) {
@@ -133,9 +143,15 @@ export const deleteUser = async function(req: Request, res: Response) {
 
 
 //update user function
-export const updateUser = async function(req: Request, res: Response) {
+export const updateUser = async function(req: RequestWithUser, res: Response) {
     const userId = req.params.id;
     const { name, role, address, contact } = req.body
+
+    const authId = req.user?._id
+
+    if (userId.toString() !== authId!.toString()) {
+        return res.status(403).json({message: "You are not Authorized to make this request"})
+    }
 
     let user;
 

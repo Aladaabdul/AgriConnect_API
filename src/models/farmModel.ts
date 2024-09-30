@@ -11,7 +11,7 @@ const FarmSchema = new Schema<IFarmModel>({
         validate: {
             validator: async function(farmerId: mongoose.Schema.Types.ObjectId) {
                 const user = await mongoose.model('User').findById(farmerId)
-                return user && user.role === 'Farmer'
+                return user && user.role === 'farmer'
             },
             message: "The user assigned must have the role of a Farmer"
         }
