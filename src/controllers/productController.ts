@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Product from "../models/productModel";
 import Farm from "../models/farmModel"
 import { IUser } from "../interfaces/userInterface";
-import mongoose from "mongoose";
+import mongoose, {Document} from "mongoose";
 
 
 interface RequestWithUser extends Request {
@@ -53,7 +53,7 @@ export const createProduct = async function (req: RequestWithUser, res: Response
 // get all farm product
 export const getAllFarmProduct = async function (req: RequestWithUser, res: Response) {
     
-    const farmId = req.params.id;
+    const farmId = req.params.farmId;
 
     let products
 
@@ -68,4 +68,76 @@ export const getAllFarmProduct = async function (req: RequestWithUser, res: Resp
     }
 
     return res.status(201).json({products});
+}
+
+
+// Update product
+export const updateProduct = async function (req: RequestWithUser, res: Response) {
+
+    const productId = req.params.productId;
+
+    const { name, price, quantity, description, category } = req.body;
+
+    const userId = req.user!._id
+
+    const product = await Product.findById(productId)
+
+    if (!product) {
+        res.status(404).json({message: "No Product Found"})
+    }
+
+    // Find the farm the product belongs to
+    const farm = await Farm.findById(product?.farmId)
+
+    // Check if the farm belongs to the authenticated user
+    if (farm?.farmerId.toString() !== userId!.toString()) {
+        return res.status(403).json({message: "You are not authorized to update this product"})
+    }
+
+    let updateProduct;
+
+    try {
+        updateProduct = await Product.findByIdAndUpdate(productId, {
+            name,
+            price,
+            quantity,
+            description,
+            category
+        })
+    } catch (error) {
+        return console.log(error)
+    }
+
+    return res.status(201).json({message: "Product Updated Successfull", updateProduct})
+
+}
+
+
+// Delete product
+export const deleteProduct = async function(req: RequestWithUser, res: Response) {
+
+    const productId = req.params.productId;
+
+    const userId = req.user?._id
+
+    const product = await Product.findById(productId);
+
+    if (!productId) {
+        return res.status(404).json({message: "No product by this id"})
+    }
+
+    // Find the farm the product belongs to
+    const farm = await Farm.findById(product?.farmId);
+
+    if (farm?.farmerId.toString() !== userId!.toString()) {
+        return res.status(403).json({message: "You are not authorized to delete this product"});
+    }
+
+    try {
+        await Product.findByIdAndDelete(productId)
+    } catch (error) {
+        return console.log(error)
+    }
+
+    return res.status(201).json({message: "Product deleted successfully"})
 }
