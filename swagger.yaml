@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  title: Agriconnect API
+  description: Agriconnect API Endpoints documentation
+  version: 0.1.9
+
+
+servers:
+  - url: http://localhost:8000/api
+  - description: Localhost base url
+
+
+paths:
+  /user:
+    get:
+      summary: Returns list of all users
+      description: List all user endpoint
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+
+
+  /user/register:
+    post:
+      summary: Register a new user (farmer or customer)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Registered Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+  
+  /user/login:
+    post:
+      summary: Login a user endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  message:
+                    type: string
+                    example: "Login Successful"
+        '400':
+          description: Bad Request - Invalid email or password
+        '401':
+          description: Unauthorized - Invalid credentials
+        '500':
+          description: Internal Server Error
+
+
+  /user/{id}:
+    put:
+      summary: Update user by userId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                role:
+                  type: string
+                address:
+                  type: string
+                contact:
+                  type: string
+      responses:
+        '200':
+          description: Updated Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  
+  /user/delete/{id}:
+    delete:
+      summary: Delete user by userId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: User Id
+      responses:
+        '200':
+          description: Deleted Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+
+
+
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [farmer | customer]
+        address:
+          type: string
+        contact:
+          type: string
+      required:
+        - name
+        - email
+        - password
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes

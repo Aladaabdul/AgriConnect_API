@@ -1,4 +1,7 @@
 import express from "express"
+import SwaggerUI from "swagger-ui-express";
+import fs from "fs";
+import yaml from "js-yaml";
 import { connectTomongo } from "./config/dbConfig"
 import userRouter from "./routes/userRoutes"
 import farmRouter from "./routes/farmRoutes"
@@ -13,6 +16,11 @@ connectTomongo()
 
 app.use(express.json())
 
+
+const swaggerDocument = yaml.load(fs.readFileSync("./swagger.yaml", 'utf-8'));
+app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument!));
+
+
 // User routes
 app.use('/api/user', userRouter);
 
@@ -24,7 +32,6 @@ app.use('/api/product', productRouter);
 
 // Order routes
 app.use('/api/order', orderRouter);
-
 
 
 
