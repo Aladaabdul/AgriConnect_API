@@ -12,5 +12,7 @@
       "dest": "src/app.ts"
     }
   ],
-  "files": ["swagger.yaml"]
+  "files": [
+    "swagger.yaml"
+  ]
 }
