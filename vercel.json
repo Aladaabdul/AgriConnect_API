@@ -11,5 +11,6 @@
       "src": "/(.*)",
       "dest": "src/app.ts"
     }
-  ]
+  ],
+  "files": ["swagger.yaml"]
 }
