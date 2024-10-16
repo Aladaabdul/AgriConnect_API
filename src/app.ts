@@ -1,6 +1,7 @@
 import express from "express"
 import SwaggerUI from "swagger-ui-express";
 import fs from "fs";
+import path from "path";
 import yaml from "js-yaml";
 import { connectTomongo } from "./config/dbConfig"
 import userRouter from "./routes/userRoutes"
@@ -17,7 +18,11 @@ connectTomongo()
 app.use(express.json())
 
 
-const swaggerDocument = yaml.load(fs.readFileSync("./swagger.yaml", 'utf-8'));
+// const swaggerDocument = yaml.load(fs.readFileSync("./swagger.yaml", 'utf-8'));
+
+const swaggerDocument = yaml.load(
+    fs.readFileSync(path.join(__dirname, '../swagger.yaml'), 'utf-8')
+);
 app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument!));
 
 
