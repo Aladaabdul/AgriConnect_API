@@ -18,11 +18,12 @@ connectTomongo()
 app.use(express.json())
 
 
-// const swaggerDocument = yaml.load(fs.readFileSync("./swagger.yaml", 'utf-8'));
+// const swaggerDocument = yaml.load(fs.readFileSync("./src/swagger.yaml", 'utf-8'));
 
 const swaggerDocument = yaml.load(
-    fs.readFileSync(path.join(__dirname, '../swagger.yaml'), 'utf-8')
+    fs.readFileSync(path.join(__dirname, '../src/swagger.yaml'), 'utf-8')
 );
+
 app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument!));
 
 
