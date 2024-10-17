@@ -18,13 +18,18 @@ connectTomongo()
 app.use(express.json())
 
 
+// CDN CSS
+
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+
+
 // const swaggerDocument = yaml.load(fs.readFileSync("./src/swagger.yaml", 'utf-8'));
 
 const swaggerDocument = yaml.load(
     fs.readFileSync(path.join(__dirname, 'swagger.yaml'), 'utf-8')
 );
 
-app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument!));
+app.use('/api-docs', SwaggerUI.serve, SwaggerUI.setup(swaggerDocument!, { customCssUrl: CSS_URL }));
 
 
 // User routes
