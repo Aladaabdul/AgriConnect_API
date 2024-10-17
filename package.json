@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/app.ts",
-    "build": "tsc",
+    "build": "tsc && copy src\\swagger.yaml build\\swagger.yaml",
     "start": "node build/app.js",
     "vercel-build": "npm run build"
   },
