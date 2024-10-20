@@ -145,6 +145,216 @@ paths:
         '401':
           description: Unauthorized
 
+  
+  /farm/create:
+    post:
+      summary: Create a new Farm
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farm'
+      responses:
+        '201':
+          description: Farm created successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+  /farm:
+    get:
+      summary: Returns list of all farms
+      description: List all farm endpoint
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+  /farm/{id}:
+    put:
+      summary: Update farm by farmId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Farm Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+      responses:
+        '200':
+          description: Updated Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  /farm/delete/{id}:
+    delete:
+      summary: Delete farm by farmId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Farm Id
+      responses:
+        '200':
+          description: Deleted Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  /farm/user:
+    get:
+      summary: Returns list of user(Farmer) farms
+      description: List all user(Farmer) farm endpoint
+      security:
+        - bearerAuth: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+  /product/create:
+    post:
+      summary: Create a new Farm product
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Product created successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+
+  /product/{farmId}:
+    get:
+      summary: Get product by farmId
+      description: Returns all farm products
+      parameters:
+        - in: path
+          name: farmId
+          required: true
+          schema:
+            type: string
+          description: Farm Id
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  /product/{productId}:
+    put:
+      summary: Update product by productId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+          description: product Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: string
+                quantity:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '200':
+          description: Updated Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  /product/delete/{productId}:
+    delete:
+      summary: Delete product by productId
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+          description: Product Id
+      responses:
+        '200':
+          description: Deleted Successfully
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
+        '401':
+          description: Unauthorized
+
+  
+
 
 
 
@@ -171,6 +381,41 @@ components:
         - name
         - email
         - password
+    Farm:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+      required:
+          - name
+          - location
+    Product:
+      type: object
+      properties:
+        farmId:
+          type: string
+        name:
+          type: string
+        price:
+          type: string
+        quantity:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+      required:
+          - farmId
+          - name
+          - price
+          - quantity
+          - description
+          - category
+
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
       type: http

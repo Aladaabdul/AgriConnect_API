@@ -8,7 +8,7 @@ const productRouter = Router();
 productRouter.post('/create', authenticateToken, createProduct);
 productRouter.get('/:farmId', getAllFarmProduct);
 productRouter.put('/:productId', authenticateToken, updateProduct);
-productRouter.delete('/:productId', authenticateToken, deleteProduct);
+productRouter.delete('/delete/:productId', authenticateToken, deleteProduct);
 
 
 
