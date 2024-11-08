@@ -27,7 +27,23 @@ paths:
         '500':
           description: Internal Server Error
 
-
+  /user/{userId}:
+    get:
+      summary: Get user by userId
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: User Id
+      responses:
+        '200':
+          description: Successful
+        '400':
+          description: Bad Request - Invalid input
+        '500':
+          description: Internal Server Error
 
   /user/register:
     post:

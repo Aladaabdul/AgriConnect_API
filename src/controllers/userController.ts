@@ -73,13 +73,32 @@ export const getAllUser = async function(req: Request, res: Response) {
         return console.log(err)
     }
 
-    if (!users) {
+    if (!users || users.length === 0) {
         return res.status(404).json({message: "No user found"})
     }
 
     return res.status(200).json({users});
 }
 
+
+// Get a user by UserId
+export const getUserById = async function(req: Request, res: Response) {
+    
+    const userId = req.params.userId;
+
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (error) {
+        return console.log(error)
+    }
+
+    if (!user) {
+        return res.status(400).json({message: "No user found"})
+    }
+
+    return res.status(200).json({user});
+}
 
 // login user function
 export const loginUser = async function(req: Request, res: Response) {

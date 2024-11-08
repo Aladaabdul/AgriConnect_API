@@ -1,4 +1,5 @@
-import express from "express"
+import express from "express";
+import cors from "cors";
 import SwaggerUI from "swagger-ui-express";
 import fs from "fs";
 import path from "path";
@@ -16,6 +17,8 @@ const PORT = process.env.PORT || 8000
 connectTomongo()
 
 app.use(express.json())
+
+app.use(cors());
 
 
 // CDN CSS
